@@ -25,12 +25,15 @@ namespace ProjectOne
             dateTimePickerBas.Value = DateTime.Now;
             dateTimePickerBit.Value = DateTime.Now.AddDays(1);
 
+            // Yatak Tipi Atama
             comboBoxYatakTipi.DataSource = Enum.GetValues(typeof(YatakTipi));
 
+            // Otel Oluşturma
             otel = new Otel("Gedik Otel", "Seferihisar İzmir", OtelTipi.Otel);
             labelOtelAdi.Text = otel.Adi;
         }
 
+        // Seçili tarih ve Özelliklere Göre Uygun Oda Sorgulama
         private void btnOdaSorgula_Click(object sender, EventArgs e)
         {
             labelList.Text = "Uygun Odalar";
@@ -45,13 +48,13 @@ namespace ProjectOne
 
             foreach (var oda in otel.Odalari)
             {
+                // Özellik Uygungunluğu
                 if (oda.DenizManzarasi == denizManzarasi && oda.HavuzManzarasi == havuzManzarasi && Enum.GetName(typeof(YatakTipi), oda.YatakTipi) == yatakTipi.ToString())
                 {
                     if (oda.Rezervasyonlar != null && oda.Rezervasyonlar.Count > 0)
                     {
                         // Rezervasyon kontrolü (Oda Müsait mi?)
                         var rezervasyonDurumu = otel.RezervasyonDurumu(oda, date1);
-
                         if (!rezervasyonDurumu)
                         {
                             listBoxOdalar.Items.Add(oda);
@@ -67,14 +70,16 @@ namespace ProjectOne
                     }
                 }
             }
-
+        
+            // Uygun oda bulunamadığında
             if (listBoxOdalar.Items.Count == 0)
             {
                 MessageBox.Show("Uygun Oda Bulunamadı!");
             }
 
         }
-
+    
+        // Çift Tık ile Oto Rezervasyon
         private void btnRezervasyonYap_Click(object sender, EventArgs e)
         {
             if (listBoxOdalar.SelectedItem == null)
@@ -86,12 +91,12 @@ namespace ProjectOne
                 var oda = listBoxOdalar.SelectedItem as Oda;
 
                 //Rezervasyon Yap
-
                 otel.RezervasyonYap(oda, new Rezervasyon()
                 {
                     GirisTarihi = dateTimePickerBas.Value,
                     CikisTarihi = dateTimePickerBit.Value,
                     OdaNumarasi = oda.Numara,
+                    // Misafir Oluşturma
                     Misafirler = new List<Misafir>()
                     {
                         new Misafir() { Ad = "John Doe " + oda.Numara, }
@@ -104,6 +109,7 @@ namespace ProjectOne
             }
         }
 
+        // Seçili Tarih Tüm Rezervasyonlar
         private void btnRezervasyonList_Click(object sender, EventArgs e)
         {
             labelList.Text = "Seçili Tarih Rez. (Detay İçin Çift Tık!)";
@@ -124,21 +130,30 @@ namespace ProjectOne
             }
         }
 
+        
         private void listBoxOdalar_DoubleClick(object sender, EventArgs e)
         {
             if (labelList.Text == "Tüm Rezervasyonlar (Çift Tık: Sil)")
             {
                 // Rezervasyon İptali
-                var rez = listBoxOdalar.SelectedItem as Rezervasyon;
-
-                var state = otel.RezervasyonIptal(rez);
-                if (state)
+                if (listBoxOdalar.SelectedItem == null)
                 {
-                    listBoxOdalar.Items.Remove(rez);
+                    MessageBox.Show("Oda Seçiniz!");
+                }
+                else
+                {
+                    var rez = listBoxOdalar.SelectedItem as Rezervasyon;
+
+                    var state = otel.RezervasyonIptal(rez);
+                    if (state)
+                    {
+                        listBoxOdalar.Items.Remove(rez);
+                    }
                 }
             }
             else
             {
+                // Rezervasyon Detayı
                 if (listBoxOdalar.SelectedItem == null)
                 {
                     MessageBox.Show("Oda Seçiniz!");
@@ -175,6 +190,7 @@ namespace ProjectOne
             dateTimePickerBit.Value = dateTimePickerBas.Value.AddDays(1);
         }
 
+        // Tarihten Bağımsız Tüm Rezervasyonlar
         private void btnTumRez_Click(object sender, EventArgs e)
         {
             labelList.Text = "Tüm Rezervasyonlar (Çift Tık: Sil)";
@@ -194,6 +210,7 @@ namespace ProjectOne
             labelOtelAdi.Text = otel.Adi + " (Doluluk Oranı : %" + oran + ")";
         }
 
+        //Doluluk Oranı
         private void btnDoluluk_Click(object sender, EventArgs e)
         {
             var date1 = dateTimePickerBas.Value;
