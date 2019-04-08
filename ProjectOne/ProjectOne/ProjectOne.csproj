@@ -51,6 +51,14 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Enums\OtelTipi.cs" />
+    <Compile Include="Models\Enums\YatakTipi.cs" />
+    <Compile Include="Models\Interface\IOda.cs" />
+    <Compile Include="Models\Interface\IOtel.cs" />
+    <Compile Include="Models\Misafir.cs" />
+    <Compile Include="Models\Oda.cs" />
+    <Compile Include="Models\Otel.cs" />
+    <Compile Include="Models\Rezervasyon.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -75,5 +83,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
